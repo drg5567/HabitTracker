@@ -9,22 +9,35 @@ namespace HabitTracker
 {
     class Database
     {
-        private string db_name;
+        private string dbName;
 
-        public Database(string db_name)
+        public Database(string dbName)
         {
-            this.db_name = db_name;
+            this.dbName = dbName;
             createDBIfNonExistant();
         }
 
         public void createDBIfNonExistant()
         {
-            using (var connection = new SqliteConnection("Data Source=" + this.db_name))
+            // Create two basic tables to populate the database
+            CreateTable("exercise");
+            CreateTable("hydration");
+
+            // TODO: add random values to the tables
+
+        }
+
+        public void CreateTable(string tableName)
+        {
+            using (var connection =new SqliteConnection("Data Source=" + this.dbName))
             {
                 connection.Open();
-
                 var command = connection.CreateCommand();
-                command.CommandText = "";
+                command.CommandText = "CREATE TABLE $name (" +
+                        "id INT PRIMARY KEY AUTOINCREMENT NOT NULL," +
+                        "date TEXT NOT NULL," +
+                        "numTimes INT NOT NULL);";
+                command.Parameters.AddWithValue("$name", tableName);
 
                 try
                 {
