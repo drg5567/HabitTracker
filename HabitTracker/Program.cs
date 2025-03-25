@@ -8,7 +8,14 @@ namespace HabitTracker
     {
         static void Main(string[] args)
         {
-
+            Console.WriteLine("Enter database name:");
+            var dbName = Console.ReadLine();
+            if (dbName == null )
+            {
+                dbName = "habit.db";
+            }
+            User user = new User(dbName);
+            user.DbSession();
         }
     }
 }
