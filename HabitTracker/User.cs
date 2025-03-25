@@ -17,11 +17,11 @@ namespace HabitTracker
             Console.WriteLine("Welcome to the habit tracker!");
             string menuStr = "Menu options:\n" +
                                "C: create a new habit to log\n" +
-                               "I: insert new record for a given habit" +
-                               "U: update a record for a given habit" +
-                               "D: delete a given habit record" +
-                               "V: view records for a given habit" +
-                               "E: exit";
+                               "I: insert new record for a given habit\n" +
+                               "U: update a record for a given habit\n" +
+                               "D: delete a given habit record\n" +
+                               "V: view records for a given habit\n" +
+                               "E: exit\n";
             Console.WriteLine(menuStr);
             var done = false;
             while (!done)
