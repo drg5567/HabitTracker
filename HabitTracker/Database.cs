@@ -31,11 +31,10 @@ namespace HabitTracker
             {
                 connection.Open();
                 var command = connection.CreateCommand();
-                command.CommandText = "CREATE TABLE $name (" +
-                        "id INT PRIMARY KEY AUTOINCREMENT NOT NULL," +
+                command.CommandText = $"CREATE TABLE {tableName} (" +
+                        "id INTEGER PRIMARY KEY AUTOINCREMENT NOT NULL," +
                         "date TEXT NOT NULL," +
-                        "numTimes INT NOT NULL);";
-                command.Parameters.AddWithValue("$name", tableName);
+                        "numTimes INTEGER NOT NULL);";
 
                 try
                 {
@@ -60,10 +59,9 @@ namespace HabitTracker
                 connection.Open();
 
                 var command = connection.CreateCommand();
-                command.CommandText = "INSERT INTO $table VALUES ($date, $val);";
-                command.Parameters.AddWithValue("$table", tableName);
-                command.Parameters.AddWithValue("$date", date);
-                command.Parameters.AddWithValue("$val", occurrence);
+                command.CommandText = $"INSERT INTO {tableName} (date, numTimes) VALUES (@date, @val);";
+                command.Parameters.AddWithValue("@date", date);
+                command.Parameters.AddWithValue("@val", occurrence);
 
                 try
                 {
@@ -89,11 +87,11 @@ namespace HabitTracker
                 connection.Open();
 
                 var command = connection.CreateCommand();
-                var cmdTxt = "SELECT * FROM $table ";
+                var cmdTxt = $"SELECT * FROM {tableName} ";
                 var changed = false;
                 if (rowId >= 0)
                 {
-                    cmdTxt += "WHERE id = $id";
+                    cmdTxt += "WHERE id = @id";
                     changed = true;
                 }
                 if (fromDate != "")
@@ -106,7 +104,7 @@ namespace HabitTracker
                     {
                         cmdTxt += "AND ";
                     }
-                    cmdTxt += "date <= $from ";
+                    cmdTxt += "date <= @from ";
                 }
                 if (toDate != "")
                 {
@@ -118,7 +116,7 @@ namespace HabitTracker
                     {
                         cmdTxt += "AND ";
                     }
-                    cmdTxt += "date > $to ";
+                    cmdTxt += "date > @to ";
                 }
                 if (minOccur > 0)
                 {
@@ -130,7 +128,7 @@ namespace HabitTracker
                     {
                         cmdTxt += "AND ";
                     }
-                    cmdTxt += "numTimes >= $min";
+                    cmdTxt += "numTimes >= @min";
                 }
                 if (maxOccur > 0)
                 {
@@ -142,16 +140,15 @@ namespace HabitTracker
                     {
                         cmdTxt += "AND ";
                     }
-                    cmdTxt += "numTimes < $max";
+                    cmdTxt += "numTimes < @max";
                 }
 
                 command.CommandText = cmdTxt;
-                command.Parameters.AddWithValue("$table", tableName);
-                command.Parameters.AddWithValue("$id", rowId);
-                command.Parameters.AddWithValue("$from", fromDate);
-                command.Parameters.AddWithValue("$to", toDate);
-                command.Parameters.AddWithValue("$min", minOccur);
-                command.Parameters.AddWithValue("$max", maxOccur);
+                command.Parameters.AddWithValue("@id", rowId);
+                command.Parameters.AddWithValue("@from", fromDate);
+                command.Parameters.AddWithValue("@to", toDate);
+                command.Parameters.AddWithValue("@min", minOccur);
+                command.Parameters.AddWithValue("@max", maxOccur);
 
                 var tableData = new List<List<object>>();
                 using (var reader = command.ExecuteReader())
