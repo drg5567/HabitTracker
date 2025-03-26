@@ -17,12 +17,32 @@ namespace HabitTracker
 
         public void createDBIfNonExistant()
         {
-            // Create two basic tables to populate the database
-            CreateTable("exercise");
-            CreateTable("hydration");
-
+            // Create two basic tables to populate the database, 'exercise' and 'hydration'
+            using (var connection = new SqliteConnection("Data Source=" + this.dbName))
+            {
+                connection.Open();
+                var command = connection.CreateCommand();
+                command.CommandText = $"SELECT name FROM sqlite_master WHERE type='table' AND name IN ('exercise', 'hydration');";
+                try
+                {
+                    var result = command.ExecuteReader();
+                    if (!result.HasRows)
+                    {
+                        CreateTable("exercise");
+                        CreateTable("hydration");
+                    }
+                }
+                catch (SqliteException e)
+                {
+                    Console.WriteLine(e.Message);
+                }
+                finally
+                {
+                    command.Dispose();
+                    connection.Dispose();
+                }
+            }
             // TODO: add random values to the tables
-
         }
 
         public void CreateTable(string tableName)
