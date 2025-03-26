@@ -36,8 +36,10 @@ namespace HabitTracker
                         InsertRecord();
                         break;
                     case "U":
+                        UpdateRecord();
                         break;
                     case "D":
+                        DeleteRecord();
                         break;
                     case "V":
                         break;
@@ -69,16 +71,53 @@ namespace HabitTracker
 
         private void InsertRecord()
         {
+            // TODO: add check to prevent multiple records for the same date
             Console.WriteLine("Enter table name:");
             var habitName = Console.ReadLine();
             if (habitName == "" || habitName == null)
             {
                 Console.WriteLine("Habit name empty, returning to main menu...");
             }
-            var recDate = InputDate();
-            var recNum = InputNumber();
-            this.database.InsertRecord(habitName, recDate, recNum);
-            Console.WriteLine("Record Inserted, returning to menu...");
+            else
+            {
+                var recDate = InputDate();
+                var recNum = InputNumber();
+                this.database.InsertRecord(habitName, recDate, recNum);
+                Console.WriteLine("Record Inserted, returning to menu...");
+            }
+        }
+
+        private void UpdateRecord()
+        {
+            Console.WriteLine("Enter table name:");
+            var habitName = Console.ReadLine();
+            if (habitName == "" || habitName == null)
+            {
+                Console.WriteLine("Habit name empty, returning to main menu...");
+            }
+            else
+            {
+                var recDate = InputDate();
+                var recNum = InputNumber();
+                this.database.UpdateRecord(habitName, recDate, recNum);
+                Console.WriteLine("Record Updated, returning to menu...");
+            }
+        }
+
+        private void DeleteRecord()
+        {
+            Console.WriteLine("Enter table name:");
+            var habitName = Console.ReadLine();
+            if (habitName == "" || habitName == null)
+            {
+                Console.WriteLine("Habit name empty, returning to main menu...");
+            }
+            else
+            {
+                var recDate = InputDate();
+                this.database.DeleteRecord(habitName, recDate);
+                Console.WriteLine("Record Deleted, returning to menu...");
+            }
         }
 
         private string InputDate()
