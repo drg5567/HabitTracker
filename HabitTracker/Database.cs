@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using Microsoft.Data.Sqlite;
 using ConsoleTableExt;
+using static System.Runtime.InteropServices.JavaScript.JSType;
 
 namespace HabitTracker
 {
@@ -186,6 +187,32 @@ namespace HabitTracker
                         var date = reader.GetString(1);
                         var occurrence = reader.GetString(2);
                         tableData.Add(new List<object> {date, occurrence});
+                    }
+                    ConsoleTableBuilder
+                            .From(tableData)
+                            .WithFormat(ConsoleTableBuilderFormat.Alternative)
+                            .ExportAndWriteLine(TableAligntment.Left);
+                }
+            }
+        }
+
+        public void ListTables()
+        {
+            using (var connection = new SqliteConnection("Data Source=" + this.dbName))
+            {
+                connection.Open();
+
+                var command = connection.CreateCommand();
+                command.CommandText = "SELECT name FROM sqlite_master WHERE type='table'";
+
+                var tableData = new List<List<object>>();
+                using (var reader = command.ExecuteReader())
+                {
+                    while (reader.Read())
+                    {
+                        var date = reader.GetString(1);
+                        var occurrence = reader.GetString(2);
+                        tableData.Add(new List<object> { date, occurrence });
                     }
                     ConsoleTableBuilder
                             .From(tableData)
