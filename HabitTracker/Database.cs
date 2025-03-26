@@ -180,8 +180,9 @@ namespace HabitTracker
                 command.Parameters.AddWithValue("@to", toDate);
 
                 var tableData = new List<List<object>>();
-                using (var reader = command.ExecuteReader())
+                try
                 {
+                    var reader = command.ExecuteReader();
                     while (reader.Read())
                     {
                         var date = reader.GetString(1);
@@ -192,6 +193,15 @@ namespace HabitTracker
                             .From(tableData)
                             .WithFormat(ConsoleTableBuilderFormat.Alternative)
                             .ExportAndWriteLine(TableAligntment.Left);
+                }
+                catch (SqliteException e)
+                {
+                    Console.WriteLine(e.Message);
+                }
+                finally
+                {
+                    command.Dispose();
+                    connection.Dispose();
                 }
             }
         }
@@ -206,8 +216,9 @@ namespace HabitTracker
                 command.CommandText = "SELECT name FROM sqlite_master WHERE type='table'";
 
                 var tableData = new List<List<object>>();
-                using (var reader = command.ExecuteReader())
+                try
                 {
+                    var reader = command.ExecuteReader();
                     while (reader.Read())
                     {
                         var date = reader.GetString(1);
@@ -218,6 +229,15 @@ namespace HabitTracker
                             .From(tableData)
                             .WithFormat(ConsoleTableBuilderFormat.Alternative)
                             .ExportAndWriteLine(TableAligntment.Left);
+                }
+                catch (SqliteException e)
+                {
+                    Console.WriteLine(e.Message);
+                }
+                finally
+                {
+                    command.Dispose();
+                    connection.Dispose();
                 }
             }
         }
