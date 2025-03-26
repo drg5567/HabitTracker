@@ -21,6 +21,7 @@ namespace HabitTracker
                                "U: update a record for a given habit\n" +
                                "D: delete a given habit record or table\n" +
                                "V: view records for a given habit\n" +
+                               "H: display menu\n" +
                                "E: exit\n";
             Console.WriteLine(menuStr);
             var done = false;
@@ -43,6 +44,9 @@ namespace HabitTracker
                         break;
                     case "V":
                         ViewRecords();
+                        break;
+                    case "H":
+                        Console.WriteLine(menuStr);
                         break;
                     case "E":
                         done = true;
@@ -128,15 +132,16 @@ namespace HabitTracker
 
         private string InputDate()
         {
-            Console.WriteLine("Enter date of record (must be in format MM-DD-YYYY");
+            Console.WriteLine("Enter date of record (must be in format MM-DD-YYYY)\n" +
+                "Enter T to use today's date");
             while (true)
             {
                 var dateStr = Console.ReadLine();
                 if (dateStr != null && dateStr.Length == 10)
                 {
                     var month = Convert.ToInt32(dateStr.Substring(0, 2));
-                    var day = Convert.ToInt32(dateStr.Substring(3, 5));
-                    var year = Convert.ToInt32(dateStr.Substring(6, 10));
+                    var day = Convert.ToInt32(dateStr.Substring(3, 2));
+                    var year = Convert.ToInt32(dateStr.Substring(6));
 
                     if (1 <= month && month <= 12 &&
                         1 <= day && day <= 31 &&
@@ -147,6 +152,11 @@ namespace HabitTracker
                             return dateStr;
                         }
                     }
+                }
+                else if (dateStr == "T")
+                {
+                    dateStr = DateTime.Now.ToString("MM-dd-yyyy");
+                    return dateStr;
                 }
                 Console.WriteLine("Invalid date entry, try again");
             }
@@ -176,9 +186,9 @@ namespace HabitTracker
         private string InputTableName()
         {
             Console.WriteLine("Enter table name:");
-            var habitName = Console.ReadLine();
             while (true)
             {
+                var habitName = Console.ReadLine();
                 if (habitName == "" || habitName == null)
                 {
                     Console.WriteLine("Habit name empty, try again");
