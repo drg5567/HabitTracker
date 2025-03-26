@@ -42,6 +42,7 @@ namespace HabitTracker
                         DeleteRecord();
                         break;
                     case "V":
+                        ViewRecords();
                         break;
                     case "E":
                         done = true;
@@ -56,67 +57,72 @@ namespace HabitTracker
 
         private void CreateTable()
         {
-            Console.WriteLine("Enter new habit name:");
-            var newHabit = Console.ReadLine();
-            if (newHabit == "" || newHabit == null)
-            {
-                Console.WriteLine("Habit name empty, returning to main menu...");
-            }
-            else
-            {
-                this.database.CreateTable(newHabit);
-                Console.WriteLine($"{newHabit} table created");
-            }
+            var newHabit = InputTableName();
+            this.database.CreateTable(newHabit);
+            Console.WriteLine($"{newHabit} table created");
         }
 
         private void InsertRecord()
         {
             // TODO: add check to prevent multiple records for the same date
-            Console.WriteLine("Enter table name:");
-            var habitName = Console.ReadLine();
-            if (habitName == "" || habitName == null)
-            {
-                Console.WriteLine("Habit name empty, returning to main menu...");
-            }
-            else
-            {
-                var recDate = InputDate();
-                var recNum = InputNumber();
-                this.database.InsertRecord(habitName, recDate, recNum);
-                Console.WriteLine("Record Inserted, returning to menu...");
-            }
+            var habitName = InputTableName();
+            var recDate = InputDate();
+            var recNum = InputNumber();
+            this.database.InsertRecord(habitName, recDate, recNum);
+            Console.WriteLine("Record Inserted, returning to menu...");
         }
 
         private void UpdateRecord()
         {
-            Console.WriteLine("Enter table name:");
-            var habitName = Console.ReadLine();
-            if (habitName == "" || habitName == null)
-            {
-                Console.WriteLine("Habit name empty, returning to main menu...");
-            }
-            else
-            {
-                var recDate = InputDate();
-                var recNum = InputNumber();
-                this.database.UpdateRecord(habitName, recDate, recNum);
-                Console.WriteLine("Record Updated, returning to menu...");
-            }
+            var habitName = InputTableName();
+            var recDate = InputDate();
+            var recNum = InputNumber();
+            this.database.UpdateRecord(habitName, recDate, recNum);
+            Console.WriteLine("Record Updated, returning to menu...");
         }
 
         private void DeleteRecord()
         {
-            Console.WriteLine("Enter table name:");
-            var habitName = Console.ReadLine();
-            if (habitName == "" || habitName == null)
+            var habitName = InputTableName();
+            var recDate = InputDate();
+            this.database.DeleteRecord(habitName, recDate);
+            Console.WriteLine("Record Deleted, returning to menu...");
+        }
+
+        private void ViewRecords()
+        {
+            var menuStr = "View Menu:\n" +
+                "S: view a single record for a given date\n" +
+                "M: view multiple records for a given date range\n" +
+                "E: exit menu\n";
+            Console.WriteLine(menuStr);
+            while (true)
             {
-                Console.WriteLine("Habit name empty, returning to main menu...");
-            }
-            else
-            {
-                var recDate = InputDate();
-                this.database.DeleteRecord(habitName, recDate);
-                Console.WriteLine("Record Deleted, returning to menu...");
+                var selection = Console.ReadLine();
+                if (selection == "S")
+                {
+                    var habitName = InputTableName();
+                    var dateStr = InputDate();
+                    this.database.SearchTable(habitName, dateStr);
+                }
+                else if (selection == "M")
+                {
+                    var habitName = InputTableName();
+                    Console.WriteLine("From date:");
+                    var fromDate = InputDate();
+                    Console.WriteLine("To date:");
+                    var toDate = InputDate();
+                    this.database.SearchTable(habitName, fromDate, toDate);
+                }
+                else if (selection == "E")
+                {
+                    Console.WriteLine("Exiting view menu...");
+                    break;
+                }
+                else
+                {
+                    Console.WriteLine("Invalid input, try again");
+                }
             }
         }
 
@@ -163,6 +169,23 @@ namespace HabitTracker
                 else
                 {
                     Console.WriteLine("Not a valid input, try again...");
+                }
+            }
+        }
+
+        private string InputTableName()
+        {
+            Console.WriteLine("Enter table name:");
+            var habitName = Console.ReadLine();
+            while (true)
+            {
+                if (habitName == "" || habitName == null)
+                {
+                    Console.WriteLine("Habit name empty, try again");
+                }
+                else
+                {
+                    return habitName;
                 }
             }
         }

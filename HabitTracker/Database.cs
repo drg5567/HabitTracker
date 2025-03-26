@@ -132,76 +132,26 @@ namespace HabitTracker
             }
         }
 
-        public void SearchTable(string tableName, int rowId = -1, string fromDate = "",
-            string toDate = "", int minOccur = 0, int maxOccur = 0)
+        public void SearchTable(string tableName, string fromDate, string toDate = "")
         {
             using (var connection = new SqliteConnection("Data Source=" + this.dbName))
             {
                 connection.Open();
 
                 var command = connection.CreateCommand();
-                var cmdTxt = $"SELECT * FROM {tableName} ";
-                var changed = false;
-                if (rowId >= 0)
+                var cmdTxt = $"SELECT * FROM {tableName} WHERE date ";
+                if (toDate == "")
                 {
-                    cmdTxt += "WHERE id = @id";
-                    changed = true;
+                    cmdTxt += "= @from;";
                 }
-                if (fromDate != "")
+                else
                 {
-                    if (!changed)
-                    {
-                        cmdTxt += "WHERE ";
-                    }
-                    else
-                    {
-                        cmdTxt += "AND ";
-                    }
-                    cmdTxt += "date <= @from ";
-                }
-                if (toDate != "")
-                {
-                    if (!changed)
-                    {
-                        cmdTxt += "WHERE ";
-                    }
-                    else
-                    {
-                        cmdTxt += "AND ";
-                    }
-                    cmdTxt += "date > @to ";
-                }
-                if (minOccur > 0)
-                {
-                    if (!changed)
-                    {
-                        cmdTxt += "WHERE ";
-                    }
-                    else
-                    {
-                        cmdTxt += "AND ";
-                    }
-                    cmdTxt += "numTimes >= @min";
-                }
-                if (maxOccur > 0)
-                {
-                    if (!changed)
-                    {
-                        cmdTxt += "WHERE ";
-                    }
-                    else
-                    {
-                        cmdTxt += "AND ";
-                    }
-                    cmdTxt += "numTimes < @max";
+                    cmdTxt += ">= @from AND date < @to;";
                 }
 
                 command.CommandText = cmdTxt;
-                command.Parameters.AddWithValue("@id", rowId);
                 command.Parameters.AddWithValue("@from", fromDate);
                 command.Parameters.AddWithValue("@to", toDate);
-                command.Parameters.AddWithValue("@min", minOccur);
-                command.Parameters.AddWithValue("@max", maxOccur);
 
                 var tableData = new List<List<object>>();
                 using (var reader = command.ExecuteReader())
