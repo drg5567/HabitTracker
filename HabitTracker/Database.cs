@@ -18,6 +18,7 @@ namespace HabitTracker
         public void createDBIfNonExistant()
         {
             // Create two basic tables to populate the database, 'exercise' and 'hydration'
+            var tablesExist = false;
             using (var connection = new SqliteConnection("Data Source=" + this.dbName))
             {
                 connection.Open();
@@ -26,10 +27,9 @@ namespace HabitTracker
                 try
                 {
                     var result = command.ExecuteReader();
-                    if (!result.HasRows)
+                    if (result.HasRows)
                     {
-                        CreateTable("exercise");
-                        CreateTable("hydration");
+                        tablesExist = true;
                     }
                 }
                 catch (SqliteException e)
@@ -41,6 +41,11 @@ namespace HabitTracker
                     command.Dispose();
                     connection.Dispose();
                 }
+            }
+            if (!tablesExist)
+            {
+                CreateTable("exercise");
+                CreateTable("hydration");
             }
             // TODO: add random values to the tables
         }
