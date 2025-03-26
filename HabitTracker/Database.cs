@@ -79,6 +79,59 @@ namespace HabitTracker
             }
         }
 
+        public void UpdateRecord(string tableName, string date, int occurrence)
+        {
+            using (var connection = new SqliteConnection("Data Source=" + this.dbName))
+            {
+                connection.Open();
+
+                var command = connection.CreateCommand();
+                command.CommandText = $"UPDATE {tableName} SET numTimes = @val WHERE date = @date;";
+                command.Parameters.AddWithValue("@date", date);
+                command.Parameters.AddWithValue("@val", occurrence);
+
+                try
+                {
+                    command.ExecuteNonQuery();
+                }
+                catch (SqliteException e)
+                {
+                    Console.WriteLine(e.Message);
+                }
+                finally
+                {
+                    command.Dispose();
+                    connection.Dispose();
+                }
+            }
+        }
+
+        public void DeleteRecord(string tableName, string date)
+        {
+            using (var connection = new SqliteConnection("Data Source=" + this.dbName))
+            {
+                connection.Open();
+
+                var command = connection.CreateCommand();
+                command.CommandText = $"DELETE FROM {tableName} WHERE date = @date;";
+                command.Parameters.AddWithValue("@date", date);
+
+                try
+                {
+                    command.ExecuteNonQuery();
+                }
+                catch (SqliteException e)
+                {
+                    Console.WriteLine(e.Message);
+                }
+                finally
+                {
+                    command.Dispose();
+                    connection.Dispose();
+                }
+            }
+        }
+
         public void SearchTable(string tableName, int rowId = -1, string fromDate = "",
             string toDate = "", int minOccur = 0, int maxOccur = 0)
         {
