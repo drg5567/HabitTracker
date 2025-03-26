@@ -40,7 +40,7 @@ namespace HabitTracker
                         UpdateRecord();
                         break;
                     case "D":
-                        DeleteRecord();
+                        DeleteRecords();
                         break;
                     case "V":
                         ViewRecords();
@@ -85,24 +85,55 @@ namespace HabitTracker
             Console.WriteLine("Record Updated, returning to menu...");
         }
 
-        private void DeleteRecord()
+        private void DeleteRecords()
         {
-            var habitName = InputTableName();
-            var recDate = InputDate();
-            this.database.DeleteRecord(habitName, recDate);
-            Console.WriteLine("Record Deleted, returning to menu...");
+            var menuStr = "Delete Menu:\n" +
+                "R: delete a single record for a given table and date\n" +
+                "T: delete an entire table\n" +
+                "E: return to main menu\n";
+            Console.WriteLine(menuStr);
+            while (true)
+            {
+                var selection = Console.ReadLine();
+                if (selection == "R")
+                {
+                    var habitName = InputTableName();
+                    var recDate = InputDate();
+                    this.database.DeleteRecord(habitName, recDate);
+                    Console.WriteLine("Record Deleted");
+                }
+                if (selection == "T")
+                {
+                    var habitName = InputTableName();
+                    // TODO: delete table functionality
+                }
+                else if (selection == "E")
+                {
+                    Console.WriteLine("Exiting delete menu...");
+                    break;
+                }
+                else
+                {
+                    Console.WriteLine("Invalid input, try again");
+                }
+            }
         }
 
         private void ViewRecords()
         {
             var menuStr = "View Menu:\n" +
-                "S: view a single record for a given date\n" +
+                "T: view table list\n" +
+                "S: view a single record for a given table and date\n" +
                 "M: view multiple records for a given date range\n" +
-                "E: exit menu\n";
+                "E: return to main menu\n";
             Console.WriteLine(menuStr);
             while (true)
             {
                 var selection = Console.ReadLine();
+                if (selection == "T")
+                {
+                    // TODO: list table functionality
+                }
                 if (selection == "S")
                 {
                     var habitName = InputTableName();
