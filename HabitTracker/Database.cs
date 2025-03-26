@@ -158,6 +158,31 @@ namespace HabitTracker
             }
         }
 
+        public void DeleteTable(string tableName)
+        {
+            using (var connection = new SqliteConnection("Data Source=" + this.dbName))
+            {
+                connection.Open();
+
+                var command = connection.CreateCommand();
+                command.CommandText = $"DROP TABLE IF EXISTS {tableName};";
+
+                try
+                {
+                    command.ExecuteNonQuery();
+                }
+                catch (SqliteException e)
+                {
+                    Console.WriteLine(e.Message);
+                }
+                finally
+                {
+                    command.Dispose();
+                    connection.Dispose();
+                }
+            }
+        }
+
         public void SearchTable(string tableName, string fromDate, string toDate = "")
         {
             using (var connection = new SqliteConnection("Data Source=" + this.dbName))
@@ -221,9 +246,8 @@ namespace HabitTracker
                     var reader = command.ExecuteReader();
                     while (reader.Read())
                     {
-                        var date = reader.GetString(1);
-                        var occurrence = reader.GetString(2);
-                        tableData.Add(new List<object> { date, occurrence });
+                        var date = reader.GetString(0);
+                        tableData.Add(new List<object> {date});
                     }
                     ConsoleTableBuilder
                             .From(tableData)

@@ -102,10 +102,10 @@ namespace HabitTracker
                     this.database.DeleteRecord(habitName, recDate);
                     Console.WriteLine("Record Deleted");
                 }
-                if (selection == "T")
+                else if (selection == "T")
                 {
                     var habitName = InputTableName();
-                    // TODO: delete table functionality
+                    this.database.DeleteTable(habitName);
                 }
                 else if (selection == "E")
                 {
@@ -132,9 +132,9 @@ namespace HabitTracker
                 var selection = Console.ReadLine();
                 if (selection == "T")
                 {
-                    // TODO: list table functionality
+                    this.database.ListTables();
                 }
-                if (selection == "S")
+                else if (selection == "S")
                 {
                     var habitName = InputTableName();
                     var dateStr = InputDate();
