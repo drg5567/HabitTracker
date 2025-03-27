@@ -89,6 +89,7 @@
         {
             var habitName = InputTableName();
             var recDate = InputDate();
+            Console.WriteLine("New value number:\n");
             var recNum = InputNumber();
             this.database.UpdateRecord(habitName, recDate, recNum);
             Console.WriteLine("Record Updated, returning to menu...");
@@ -100,6 +101,7 @@
                 "R: delete a single record for a given table and date\n" +
                 "T: delete an entire table\n" +
                 "H: display menu options\n" +
+                "W: clear screen\n" +
                 "E: return to main menu\n";
             Console.WriteLine(menuStr);
             while (true)
@@ -120,6 +122,10 @@
                 else if (selection == "H")
                 {
                     Console.WriteLine(menuStr);
+                }
+                else if (selection == "W")
+                {
+                    Console.Clear();
                 }
                 else if (selection == "E")
                 {
