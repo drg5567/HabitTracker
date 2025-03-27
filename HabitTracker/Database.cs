@@ -1,8 +1,5 @@
-﻿using System;
-using System.Collections.Generic;
-using Microsoft.Data.Sqlite;
+﻿using Microsoft.Data.Sqlite;
 using ConsoleTableExt;
-using static System.Runtime.InteropServices.JavaScript.JSType;
 
 namespace HabitTracker
 {

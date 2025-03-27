@@ -1,7 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-
-namespace HabitTracker
+﻿namespace HabitTracker
 {
     class User
     {
