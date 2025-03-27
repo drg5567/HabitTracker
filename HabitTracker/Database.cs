@@ -42,6 +42,7 @@ namespace HabitTracker
             }
             if (!tablesExist)
             {
+                Console.WriteLine("Creating initial db...");
                 CreateTable("exercise");
                 CreateTable("hydration");
 
