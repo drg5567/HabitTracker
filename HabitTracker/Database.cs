@@ -16,7 +16,7 @@ namespace HabitTracker
             createDBIfNonExistant();
         }
 
-        public void createDBIfNonExistant()
+        private void createDBIfNonExistant()
         {
             // Create two basic tables to populate the database, 'exercise' and 'hydration'
             var tablesExist = false;
@@ -47,8 +47,44 @@ namespace HabitTracker
             {
                 CreateTable("exercise");
                 CreateTable("hydration");
+
+                PopulateDB("exercise");
+                PopulateDB("hydration");
             }
-            // TODO: add random values to the tables
+        }
+
+        private void PopulateDB(string tableName)
+        {
+            using (var connection = new SqliteConnection("Data Source=" + this.dbName))
+            {
+                connection.Open();
+                var command = connection.CreateCommand();
+
+                Random r = new Random();
+                for (int i = 0; i < 100; i++)
+                {
+                    DateTime lastYear = DateTime.Today.AddYears(-1);
+                    int randNum = r.Next(0, 365);
+                    DateTime randDay = lastYear.AddDays(randNum);
+                    string date = randDay.ToString("MM-dd-yyyy");
+                    int occurrence = r.Next(1, 5);
+
+                    command.CommandText = $"INSERT INTO {tableName} (date, numTimes) VALUES ('@date', @val);";
+                    command.Parameters.AddWithValue("@date", date);
+                    command.Parameters.AddWithValue("@val", occurrence);
+
+                    try
+                    {
+                        command.ExecuteNonQuery();
+                    }
+                    catch (SqliteException e)
+                    {
+                        Console.WriteLine(e.Message);
+                    }
+                }
+                command.Dispose();
+                connection.Dispose();
+            }
         }
 
         public void CreateTable(string tableName)
@@ -205,6 +241,7 @@ namespace HabitTracker
                 command.Parameters.AddWithValue("@to", toDate);
 
                 var tableData = new List<List<object>>();
+                tableData.Add(new List<object> { "date:", "occurrence:" });
                 try
                 {
                     var reader = command.ExecuteReader();
@@ -212,7 +249,7 @@ namespace HabitTracker
                     {
                         var date = reader.GetString(1);
                         var occurrence = reader.GetString(2);
-                        tableData.Add(new List<object> {date, occurrence});
+                        tableData.Add(new List<object> { date, occurrence });
                     }
                     ConsoleTableBuilder
                             .From(tableData)
@@ -247,7 +284,7 @@ namespace HabitTracker
                     while (reader.Read())
                     {
                         var date = reader.GetString(0);
-                        tableData.Add(new List<object> {date});
+                        tableData.Add(new List<object> { date });
                     }
                     ConsoleTableBuilder
                             .From(tableData)

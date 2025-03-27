@@ -19,9 +19,9 @@ namespace HabitTracker
                                "C: create a new habit to log\n" +
                                "I: insert new record for a given habit\n" +
                                "U: update a record for a given habit\n" +
-                               "D: delete a given habit record or table\n" +
-                               "V: view records for a given habit\n" +
-                               "H: display menu\n" +
+                               "D: delete menu\n" +
+                               "V: view menu\n" +
+                               "H: display main menu options\n" +
                                "W: clear screen\n" +
                                "E: exit\n";
             Console.WriteLine(menuStr);
@@ -137,6 +137,7 @@ namespace HabitTracker
                 "T: view table list\n" +
                 "S: view a single record for a given table and date\n" +
                 "M: view multiple records for a given date range\n" +
+                "W: clear screen\n" +
                 "E: return to main menu\n";
             Console.WriteLine(menuStr);
             while (true)
@@ -160,6 +161,10 @@ namespace HabitTracker
                     Console.WriteLine("To date:");
                     var toDate = InputDate();
                     this.database.SearchTable(habitName, fromDate, toDate);
+                }
+                else if (selection == "W")
+                {
+                    Console.Clear();
                 }
                 else if (selection == "E")
                 {
