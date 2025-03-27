@@ -61,15 +61,23 @@ namespace HabitTracker
                 var command = connection.CreateCommand();
 
                 Random r = new Random();
-                for (int i = 0; i < 100; i++)
+                List<string> dateList = new List<string>();
+                while (dateList.Count < 100)
                 {
                     DateTime lastYear = DateTime.Today.AddYears(-1);
                     int randNum = r.Next(0, 365);
                     DateTime randDay = lastYear.AddDays(randNum);
-                    string date = randDay.ToString("MM-dd-yyyy");
+                    string date = randDay.ToString("yyyy-MM-dd");
+                    if (dateList.Contains(date))
+                    {
+                        continue;
+                    }
+                    dateList.Add(date);
+
                     int occurrence = r.Next(1, 5);
 
-                    command.CommandText = $"INSERT INTO {tableName} (date, numTimes) VALUES ('@date', @val);";
+                    command.CommandText = $"INSERT INTO {tableName} (date, numTimes) VALUES (@date, @val);";
+                    command.Parameters.Clear();
                     command.Parameters.AddWithValue("@date", date);
                     command.Parameters.AddWithValue("@val", occurrence);
 
@@ -119,9 +127,11 @@ namespace HabitTracker
             using (var connection = new SqliteConnection("Data Source=" + this.dbName))
             {
                 connection.Open();
-
                 var command = connection.CreateCommand();
-                command.CommandText = $"INSERT INTO {tableName} (date, numTimes) VALUES ('@date', @val);";
+
+                // Switch date format for storage
+                string formattedDate = ConvertDate(date);
+                command.CommandText = $"INSERT INTO {tableName} (date, numTimes) VALUES (@date, @val);";
                 command.Parameters.AddWithValue("@date", date);
                 command.Parameters.AddWithValue("@val", occurrence);
 
@@ -146,9 +156,11 @@ namespace HabitTracker
             using (var connection = new SqliteConnection("Data Source=" + this.dbName))
             {
                 connection.Open();
-
                 var command = connection.CreateCommand();
-                command.CommandText = $"UPDATE {tableName} SET numTimes = @val WHERE date = '@date';";
+
+                // Switch date format for storage
+                string formattedDate = ConvertDate(date);
+                command.CommandText = $"UPDATE {tableName} SET numTimes = @val WHERE date = @date;";
                 command.Parameters.AddWithValue("@date", date);
                 command.Parameters.AddWithValue("@val", occurrence);
 
@@ -173,9 +185,11 @@ namespace HabitTracker
             using (var connection = new SqliteConnection("Data Source=" + this.dbName))
             {
                 connection.Open();
-
                 var command = connection.CreateCommand();
-                command.CommandText = $"DELETE FROM {tableName} WHERE date = '@date';";
+
+                // Switch date format for storage
+                string formattedDate = ConvertDate(date);
+                command.CommandText = $"DELETE FROM {tableName} WHERE date = @date;";
                 command.Parameters.AddWithValue("@date", date);
 
                 try
@@ -224,21 +238,25 @@ namespace HabitTracker
             using (var connection = new SqliteConnection("Data Source=" + this.dbName))
             {
                 connection.Open();
-
                 var command = connection.CreateCommand();
+
+                // Switch date format for storage
+                string formattedFromDate = ConvertDate(fromDate);
                 var cmdTxt = $"SELECT * FROM {tableName} WHERE date ";
                 if (toDate == "")
                 {
-                    cmdTxt += "= @from;";
+                    command.CommandText = cmdTxt + "= @from;";
+                    command.Parameters.AddWithValue("@from", formattedFromDate);
                 }
                 else
                 {
-                    cmdTxt += ">= @from AND date < @to;";
-                }
+                    // Switch date format for storage
+                    string formattedToDate = ConvertDate(toDate);
 
-                command.CommandText = cmdTxt;
-                command.Parameters.AddWithValue("@from", fromDate);
-                command.Parameters.AddWithValue("@to", toDate);
+                    command.CommandText = cmdTxt + "BETWEEN @from AND @to;"; ;
+                    command.Parameters.AddWithValue("@from", formattedFromDate);
+                    command.Parameters.AddWithValue("@to", formattedToDate);
+                }
 
                 var tableData = new List<List<object>>();
                 tableData.Add(new List<object> { "date:", "occurrence:" });
@@ -310,7 +328,10 @@ namespace HabitTracker
             {
                 connection.Open();
                 var command = connection.CreateCommand();
-                command.CommandText = $"SELECT * FROM {tableName} WHERE date = '@date';";
+
+                // Switch date format for storage
+                string formattedDate = ConvertDate(date);
+                command.CommandText = $"SELECT * FROM {tableName} WHERE date = @date;";
                 try
                 {
                     var result = command.ExecuteReader();
@@ -330,6 +351,12 @@ namespace HabitTracker
                 }
             }
             return dateAvailable;
+        }
+
+        private string ConvertDate(string dateStr)
+        {
+            DateTime parsedDate = DateTime.ParseExact(dateStr, "MM-dd-yyyy", null);
+            return parsedDate.ToString("yyyy-MM-dd");
         }
     }
 }

@@ -102,6 +102,7 @@ namespace HabitTracker
             var menuStr = "Delete Menu:\n" +
                 "R: delete a single record for a given table and date\n" +
                 "T: delete an entire table\n" +
+                "H: display menu options\n" +
                 "E: return to main menu\n";
             Console.WriteLine(menuStr);
             while (true)
@@ -118,6 +119,10 @@ namespace HabitTracker
                 {
                     var habitName = InputTableName();
                     this.database.DeleteTable(habitName);
+                }
+                else if (selection == "H")
+                {
+                    Console.WriteLine(menuStr);
                 }
                 else if (selection == "E")
                 {
@@ -137,6 +142,7 @@ namespace HabitTracker
                 "T: view table list\n" +
                 "S: view a single record for a given table and date\n" +
                 "M: view multiple records for a given date range\n" +
+                "H: display menu options\n" +
                 "W: clear screen\n" +
                 "E: return to main menu\n";
             Console.WriteLine(menuStr);
@@ -161,6 +167,10 @@ namespace HabitTracker
                     Console.WriteLine("To date:");
                     var toDate = InputDate();
                     this.database.SearchTable(habitName, fromDate, toDate);
+                }
+                else if (selection == "H")
+                {
+                    Console.WriteLine(menuStr);
                 }
                 else if (selection == "W")
                 {
