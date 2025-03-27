@@ -22,6 +22,7 @@ namespace HabitTracker
                                "D: delete a given habit record or table\n" +
                                "V: view records for a given habit\n" +
                                "H: display menu\n" +
+                               "W: clear screen\n" +
                                "E: exit\n";
             Console.WriteLine(menuStr);
             var done = false;
@@ -52,6 +53,9 @@ namespace HabitTracker
                         done = true;
                         Console.Clear();
                         break;
+                    case "W":
+                        Console.Clear();
+                        break;
                     default:
                         Console.WriteLine("Invalid menu choice: try again\n");
                         break;
@@ -68,12 +72,20 @@ namespace HabitTracker
 
         private void InsertRecord()
         {
-            // TODO: add check to prevent multiple records for the same date
             var habitName = InputTableName();
             var recDate = InputDate();
             var recNum = InputNumber();
-            this.database.InsertRecord(habitName, recDate, recNum);
-            Console.WriteLine("Record Inserted, returning to menu...");
+            var dateAvailable = this.database.IsDateAvailable(habitName, recDate);
+            if (dateAvailable)
+            {
+                this.database.InsertRecord(habitName, recDate, recNum);
+                Console.WriteLine("Record Inserted, returning to main menu...");
+            }
+            else
+            {
+                Console.WriteLine("Operation canceled, date is already taken for given table");
+                Console.WriteLine("Returning to main menu...");
+            }
         }
 
         private void UpdateRecord()

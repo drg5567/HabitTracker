@@ -85,7 +85,7 @@ namespace HabitTracker
                 connection.Open();
 
                 var command = connection.CreateCommand();
-                command.CommandText = $"INSERT INTO {tableName} (date, numTimes) VALUES (@date, @val);";
+                command.CommandText = $"INSERT INTO {tableName} (date, numTimes) VALUES ('@date', @val);";
                 command.Parameters.AddWithValue("@date", date);
                 command.Parameters.AddWithValue("@val", occurrence);
 
@@ -112,7 +112,7 @@ namespace HabitTracker
                 connection.Open();
 
                 var command = connection.CreateCommand();
-                command.CommandText = $"UPDATE {tableName} SET numTimes = @val WHERE date = @date;";
+                command.CommandText = $"UPDATE {tableName} SET numTimes = @val WHERE date = '@date';";
                 command.Parameters.AddWithValue("@date", date);
                 command.Parameters.AddWithValue("@val", occurrence);
 
@@ -139,7 +139,7 @@ namespace HabitTracker
                 connection.Open();
 
                 var command = connection.CreateCommand();
-                command.CommandText = $"DELETE FROM {tableName} WHERE date = @date;";
+                command.CommandText = $"DELETE FROM {tableName} WHERE date = '@date';";
                 command.Parameters.AddWithValue("@date", date);
 
                 try
@@ -264,6 +264,35 @@ namespace HabitTracker
                     connection.Dispose();
                 }
             }
+        }
+
+        public bool IsDateAvailable(string tableName, string date)
+        {
+            var dateAvailable = false;
+            using (var connection = new SqliteConnection("Data Source=" + this.dbName))
+            {
+                connection.Open();
+                var command = connection.CreateCommand();
+                command.CommandText = $"SELECT * FROM {tableName} WHERE date = '@date';";
+                try
+                {
+                    var result = command.ExecuteReader();
+                    if (!result.HasRows)
+                    {
+                        dateAvailable = true;
+                    }
+                }
+                catch (SqliteException e)
+                {
+                    Console.WriteLine(e.Message);
+                }
+                finally
+                {
+                    command.Dispose();
+                    connection.Dispose();
+                }
+            }
+            return dateAvailable;
         }
     }
 }
