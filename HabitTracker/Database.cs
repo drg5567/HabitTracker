@@ -253,7 +253,7 @@ namespace HabitTracker
                     // Switch date format for storage
                     string formattedToDate = ConvertDate(toDate);
 
-                    command.CommandText = cmdTxt + "BETWEEN @from AND @to;"; ;
+                    command.CommandText = cmdTxt + "BETWEEN @from AND @to ORDER BY date DESC;"; ;
                     command.Parameters.AddWithValue("@from", formattedFromDate);
                     command.Parameters.AddWithValue("@to", formattedToDate);
                 }
