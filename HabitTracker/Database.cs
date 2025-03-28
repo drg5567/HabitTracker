@@ -1,19 +1,30 @@
-﻿using Microsoft.Data.Sqlite;
-using ConsoleTableExt;
+﻿using ConsoleTableExt;
+using Microsoft.Data.Sqlite;
 
 namespace HabitTracker
 {
+    /// <summary>
+    /// This class handles all database functions, including creating and managing a database.
+    /// Supports basic CRUD functions.
+    /// 
+    /// Author: Daniel Gardner
+    /// </summary>
     class Database
     {
-        private string dbName;
+        private readonly string dbName;
 
         public Database(string dbName)
         {
             this.dbName = dbName;
-            createDBIfNonExistant();
+            CreateDBIfNonExistant();
         }
 
-        private void createDBIfNonExistant()
+        /// <summary>
+        /// Checks if there exists the two given tables in a database with the given filename.
+        /// If not, the database does not exist yet, and the tables are created and populated
+        /// with random data.
+        /// </summary>
+        private void CreateDBIfNonExistant()
         {
             // Create two basic tables to populate the database, 'exercise' and 'hydration'
             var tablesExist = false;
@@ -51,6 +62,10 @@ namespace HabitTracker
             }
         }
 
+        /// <summary>
+        /// Populates a table with 100 unique random records.
+        /// </summary>
+        /// <param name="tableName"></param>
         private void PopulateDB(string tableName)
         {
             using (var connection = new SqliteConnection("Data Source=" + this.dbName))
@@ -93,6 +108,10 @@ namespace HabitTracker
             }
         }
 
+        /// <summary>
+        /// Creates a new table in the database.
+        /// </summary>
+        /// <param name="tableName"></param>
         public void CreateTable(string tableName)
         {
             using (var connection = new SqliteConnection("Data Source=" + this.dbName))
@@ -120,6 +139,12 @@ namespace HabitTracker
             }
         }
 
+        /// <summary>
+        /// Inserts a single records into a specific table in the database.
+        /// </summary>
+        /// <param name="tableName"></param>
+        /// <param name="date"></param>
+        /// <param name="occurrence"></param>
         public void InsertRecord(string tableName, string date, int occurrence)
         {
             using (var connection = new SqliteConnection("Data Source=" + this.dbName))
@@ -149,6 +174,12 @@ namespace HabitTracker
             }
         }
 
+        /// <summary>
+        /// Update the occurence value of a record in a database table.
+        /// </summary>
+        /// <param name="tableName"></param>
+        /// <param name="date"></param>
+        /// <param name="occurrence"></param>
         public void UpdateRecord(string tableName, string date, int occurrence)
         {
             using (var connection = new SqliteConnection("Data Source=" + this.dbName))
@@ -178,6 +209,11 @@ namespace HabitTracker
             }
         }
 
+        /// <summary>
+        /// Deletes a single record from the specified table.
+        /// </summary>
+        /// <param name="tableName"></param>
+        /// <param name="date"></param>
         public void DeleteRecord(string tableName, string date)
         {
             using (var connection = new SqliteConnection("Data Source=" + this.dbName))
@@ -206,6 +242,10 @@ namespace HabitTracker
             }
         }
 
+        /// <summary>
+        /// Deletes an entire table from the database.
+        /// </summary>
+        /// <param name="tableName"></param>
         public void DeleteTable(string tableName)
         {
             using (var connection = new SqliteConnection("Data Source=" + this.dbName))
@@ -231,6 +271,13 @@ namespace HabitTracker
             }
         }
 
+        /// <summary>
+        /// Executes a SELECT statement on a given table in the database and displays all results.
+        /// Has the capability for single record search or a search within a date range.
+        /// </summary>
+        /// <param name="tableName"></param>
+        /// <param name="fromDate"></param>
+        /// <param name="toDate"></param>
         public void SearchTable(string tableName, string fromDate, string toDate = "")
         {
             using (var connection = new SqliteConnection("Data Source=" + this.dbName))
@@ -284,6 +331,9 @@ namespace HabitTracker
             }
         }
 
+        /// <summary>
+        /// Displays all the active table names in the database.
+        /// </summary>
         public void ListTables()
         {
             using (var connection = new SqliteConnection("Data Source=" + this.dbName))
@@ -319,6 +369,13 @@ namespace HabitTracker
             }
         }
 
+        /// <summary>
+        /// Executes a search on a given table in the database to determine if there exists a record
+        /// for a specified date.
+        /// </summary>
+        /// <param name="tableName"></param>
+        /// <param name="date"></param>
+        /// <returns></returns>
         public bool IsDateAvailable(string tableName, string date)
         {
             var dateAvailable = false;
@@ -351,7 +408,13 @@ namespace HabitTracker
             return dateAvailable;
         }
 
-        private string ConvertDate(string dateStr)
+        /// <summary>
+        /// Private function that converts date values from the user interface format to the
+        /// storage format.
+        /// </summary>
+        /// <param name="dateStr"></param>
+        /// <returns></returns>
+        private static string ConvertDate(string dateStr)
         {
             DateTime parsedDate = DateTime.ParseExact(dateStr, "MM-dd-yyyy", null);
             return parsedDate.ToString("yyyy-MM-dd");
