@@ -3,6 +3,8 @@
     /// <summary>
     /// Represents a user connection to a given habit tracker database. Contains all user functionality
     /// methods.
+    /// 
+    /// Author: Daniel Gardner
     /// </summary>
     class User
     {

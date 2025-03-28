@@ -1,5 +1,10 @@
 ﻿namespace HabitTracker
 {
+    /// <summary>
+    /// Main class for program. Prompts user to enter a database name then launches a user session.
+    /// 
+    /// Author: Daniel Gardner
+    /// </summary>
     class Program
     {
         static void Main(string[] args)
