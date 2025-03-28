@@ -1,14 +1,22 @@
 ﻿namespace HabitTracker
 {
+    /// <summary>
+    /// Represents a user connection to a given habit tracker database. Contains all user functionality
+    /// methods.
+    /// </summary>
     class User
     {
-        private Database database;
+        private readonly Database database;
 
         public User(string dbName)
         {
             this.database = new Database(dbName);
         }
 
+        /// <summary>
+        /// The main connection loop for the user. Opens the main menu and allows the user to
+        /// perform actions to insert, view, and modify habit records.
+        /// </summary>
         public void DbSession()
         {
             Console.WriteLine("Welcome to the habit tracker!");
@@ -60,6 +68,9 @@
             }
         }
 
+        /// <summary>
+        /// Prompts the user to enter a table name and initiates a create table action to the database.
+        /// </summary>
         private void CreateTable()
         {
             var newHabit = InputTableName();
@@ -67,6 +78,10 @@
             Console.WriteLine($"{newHabit} table created");
         }
 
+        /// <summary>
+        /// Prompts the user to enter information regarding inserting a record for a given habit.
+        /// Attempts to enter record into the database.
+        /// </summary>
         private void InsertRecord()
         {
             var habitName = InputTableName();
@@ -85,6 +100,10 @@
             }
         }
 
+        /// <summary>
+        /// Prompts the user to enter information regarding updating a record for a given habit.
+        /// Attempts to enter new record data into the database.
+        /// </summary>
         private void UpdateRecord()
         {
             var habitName = InputTableName();
@@ -95,6 +114,10 @@
             Console.WriteLine("Record Updated, returning to menu...");
         }
 
+        /// <summary>
+        /// Main user functionality to delete records. Displays a menu that allows users to delete
+        /// single record values or entire tables.
+        /// </summary>
         private void DeleteRecords()
         {
             var menuStr = "Delete Menu:\n" +
@@ -139,6 +162,10 @@
             }
         }
 
+        /// <summary>
+        /// Main user functionality to delete records. Displays a menu that allows users to view
+        /// all active tables, single record values, or records within date ranges.
+        /// </summary>
         private void ViewRecords()
         {
             var menuStr = "View Menu:\n" +
@@ -191,6 +218,10 @@
             }
         }
 
+        /// <summary>
+        /// Prompts the user to enter a valid date value
+        /// </summary>
+        /// <returns></returns>
         private string InputDate()
         {
             Console.WriteLine("Enter date of record (must be in format MM-DD-YYYY)\n" +
@@ -223,6 +254,10 @@
             }
         }
 
+        /// <summary>
+        /// Prompts the user to enter a valid number value
+        /// </summary>
+        /// <returns></returns>
         private int InputNumber()
         {
             Console.WriteLine("Enter number of times habit was completed (must be >= 1):");
@@ -244,6 +279,10 @@
             }
         }
 
+        /// <summary>
+        /// Prompts the user to enter a valid table name value
+        /// </summary>
+        /// <returns></returns>
         private string InputTableName()
         {
             Console.WriteLine("Enter table name:");
